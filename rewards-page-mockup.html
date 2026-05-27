@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Doomlings Rewards — proposed layout (with modals)</title>
+<style>
+  /* ─── Tokens ─────────────────────────────────────────────────────────────── */
+  :root {
+    --bg:        #ffffff;
+    --bg-soft:   #faf8ff;
+    --bg-panel:  #f5f1fb;
+    --ink:       #1a1325;
+    --ink-soft:  #6b6480;
+    --ink-mute:  #9b94ad;
+    --line:      #ece6f7;
+    --line-soft: #f3eff9;
+    --brand:     #50248F;
+    --brand-2:   #6e3ec9;
+    --brand-ink: #2d1456;
+    --accent:    #f7c948;
+    --success:   #047857;
+    --success-bg:#ecfdf5;
+    --warn:      #b45309;
+    --warn-bg:   #fffbeb;
+    --radius:    14px;
+    --shadow:    0 1px 2px rgba(45,20,86,0.04), 0 8px 24px rgba(45,20,86,0.06);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--brand); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  button { font-family: inherit; }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  .eyebrow {
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--ink-mute);
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 16px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .section-sub {
+    color: var(--ink-soft);
+    font-size: 14px;
+    margin: -10px 0 24px;
+  }
+
+  /* ─── Hero ──────────────────────────────────────────────────────────────── */
+  .hero {
+    background: linear-gradient(135deg, #50248F 0%, #6e3ec9 100%);
+    color: #fff;
+    border-radius: 20px;
+    padding: 36px 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(247,201,72,0.18);
+    filter: blur(8px);
+  }
+  .hero-greet { font-size: 14px; opacity: 0.85; margin-bottom: 4px; }
+  .hero-balance { display: flex; align-items: baseline; gap: 12px; margin-bottom: 22px; }
+  .hero-points { font-size: 64px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+  .hero-pts-label { font-size: 16px; opacity: 0.85; font-weight: 500; }
+  .hero-tier {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.15);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    backdrop-filter: blur(8px);
+  }
+  .hero-tier-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .hero-progress { margin-top: 18px; }
+  .hero-progress-meta {
+    display: flex; justify-content: space-between;
+    font-size: 12px; opacity: 0.85; margin-bottom: 6px;
+  }
+  .hero-bar { height: 8px; background: rgba(255,255,255,0.2); border-radius: 999px; overflow: hidden; }
+  .hero-bar-fill { width: 4%; height: 100%; background: var(--accent); border-radius: 999px; }
+  .hero-actions { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 11px 22px; border-radius: 999px; font-weight: 700; font-size: 14px;
+    border: none; cursor: pointer; text-decoration: none; transition: transform 0.06s, box-shadow 0.18s;
+  }
+  .btn-primary { background: #fff; color: var(--brand); }
+  .btn-primary:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.18); text-decoration: none; }
+  .btn-ghost { background: rgba(255,255,255,0.15); color: #fff; }
+  .btn-ghost:hover { background: rgba(255,255,255,0.25); text-decoration: none; }
+  .btn-solid { background: var(--brand); color: #fff; }
+  .btn-solid:hover { background: var(--brand-2); text-decoration: none; }
+  .btn-outline { background: #fff; color: var(--brand); border: 1.5px solid var(--brand); }
+  .btn-outline:hover { background: var(--bg-soft); text-decoration: none; }
+
+  /* ─── "Already earned" banner ───────────────────────────────────────────── */
+  .earned-banner {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--success-bg);
+    border: 1px solid #a7f3d0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+  }
+  .earned-banner .icon {
+    width: 36px; height: 36px;
+    background: var(--success); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%; font-weight: 800;
+  }
+  .earned-banner .body { flex: 1; }
+  .earned-banner .title { font-weight: 700; color: var(--success); font-size: 14px; }
+  .earned-banner .sub { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+  .earned-banner .pts {
+    font-size: 13px; font-weight: 800; color: var(--success);
+    background: #fff; border: 1px solid #a7f3d0;
+    padding: 4px 10px; border-radius: 999px;
+  }
+
+  /* ─── Stats row ─────────────────────────────────────────────────────────── */
+  .summary-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 12px; margin-bottom: 36px;
+  }
+  .stat {
+    background: var(--bg-soft); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 14px 16px;
+  }
+  .stat-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-mute); font-weight: 700; margin-bottom: 4px;
+  }
+  .stat-value { font-size: 20px; font-weight: 700; color: var(--ink); }
+  .stat-sub { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+
+  /* ─── Cards ─────────────────────────────────────────────────────────────── */
+  .card {
+    background: #fff; border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 24px; margin-bottom: 24px;
+  }
+  .account-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+  .field-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-mute); font-weight: 700; margin-bottom: 4px;
+  }
+  .field-value { font-size: 14px; color: var(--ink); font-weight: 500; }
+
+  /* ─── Ways to earn ──────────────────────────────────────────────────────── */
+  .earn-section { margin: 36px 0; }
+  .earn-group {
+    background: var(--bg-soft); border-radius: 18px;
+    padding: 24px; margin-bottom: 16px;
+  }
+  .earn-group-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .earn-group-title { font-size: 15px; font-weight: 700; color: var(--brand-ink); margin: 0; }
+  .earn-group-sub { font-size: 12px; color: var(--ink-soft); }
+  .earn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .earn-tile {
+    background: #fff; border: 1px solid var(--line);
+    border-radius: 12px; padding: 18px 16px;
+    display: flex; flex-direction: column; gap: 6px; position: relative;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.06s;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    color: inherit;
+  }
+  .earn-tile:hover { border-color: var(--brand-2); box-shadow: var(--shadow); }
+  .earn-tile.locked { opacity: 0.55; cursor: not-allowed; }
+  .earn-tile.locked:hover { border-color: var(--line); box-shadow: none; }
+  .earn-icon {
+    width: 36px; height: 36px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--bg-panel); border-radius: 10px;
+    font-size: 18px; margin-bottom: 4px;
+  }
+  .earn-pts {
+    font-size: 18px; font-weight: 800;
+    color: var(--brand); letter-spacing: -0.01em;
+  }
+  .earn-title { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+  .earn-desc { font-size: 12px; color: var(--ink-soft); line-height: 1.4; }
+  .earn-cta {
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-top: 8px; font-size: 13px; font-weight: 700; color: var(--brand);
+  }
+  .earn-cta::after { content: "→"; transition: transform 0.15s; }
+  .earn-tile:hover .earn-cta::after { transform: translateX(2px); }
+  .earn-badge {
+    position: absolute; top: 12px; right: 12px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 3px 8px; border-radius: 999px;
+  }
+  .earn-badge.done { background: var(--success); color: #fff; }
+  .earn-badge.locked { background: var(--ink-mute); color: #fff; }
+  .earn-badge.modal {
+    background: var(--brand); color: #fff;
+    text-transform: none; font-size: 9px; letter-spacing: 0.04em;
+  }
+  .earn-badge.portal { background: var(--accent); color: #2d1456; }
+
+  /* ─── Rewards row ───────────────────────────────────────────────────────── */
+  .rewards-panel {
+    background: linear-gradient(135deg, #2d1456 0%, #50248F 100%);
+    color: #fff; border-radius: 18px;
+    padding: 28px; margin: 36px 0;
+  }
+  .rewards-head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 18px; flex-wrap: wrap; gap: 8px;
+  }
+  .rewards-head h2 { margin: 0; font-size: 20px; }
+  .rewards-head .meta { font-size: 13px; opacity: 0.85; }
+  .rewards-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .reward {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px; padding: 18px 16px; text-align: center;
+    transition: background 0.15s, transform 0.06s;
+  }
+  .reward.affordable { background: rgba(247,201,72,0.18); border-color: var(--accent); }
+  .reward-amt { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
+  .reward-label { font-size: 12px; opacity: 0.85; margin: 4px 0 8px; }
+  .reward-cost { font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: 0.04em; text-transform: uppercase; }
+  .reward-needs { font-size: 11px; opacity: 0.7; margin-top: 4px; }
+  .reward.affordable .reward-needs { display: none; }
+
+  /* ─── Tier ladder ───────────────────────────────────────────────────────── */
+  .tier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .tier {
+    background: #fff; border: 1px solid var(--line);
+    border-radius: 14px; padding: 20px; text-align: center; position: relative;
+  }
+  .tier.current { border: 2px solid var(--brand); background: var(--bg-soft); }
+  .tier-pill {
+    position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+    background: var(--brand); color: #fff;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 999px;
+  }
+  .tier-name { font-size: 16px; font-weight: 800; color: var(--ink); letter-spacing: 0.02em; text-transform: uppercase; }
+  .tier-req { font-size: 12px; color: var(--ink-soft); margin: 4px 0 14px; }
+  .tier-perks { list-style: none; padding: 0; margin: 0; text-align: left; font-size: 13px; color: var(--ink); }
+  .tier-perks li { padding: 4px 0 4px 18px; position: relative; }
+  .tier-perks li::before { content: "✓"; position: absolute; left: 0; top: 4px; color: var(--brand); font-weight: 800; }
+
+  /* ─── Orders ────────────────────────────────────────────────────────────── */
+  .orders { border-collapse: collapse; width: 100%; font-size: 13px; }
+  .orders th {
+    text-align: left; color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 700;
+    padding: 6px 10px; border-bottom: 1px solid var(--line);
+  }
+  .orders td { padding: 12px 10px; border-bottom: 1px solid var(--line-soft); color: var(--ink); }
+  .orders tr:last-child td { border-bottom: none; }
+  .order-id { font-weight: 700; color: var(--brand); }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  .pill-paid { background: var(--success-bg); color: var(--success); }
+  .pill-pending { background: var(--warn-bg); color: var(--warn); }
+
+  /* ─── Annotations (proposed changes) ────────────────────────────────────── */
+  .anno { position: relative; }
+  .anno-tag {
+    position: absolute; top: -10px; left: 12px;
+    background: #FEF08A; color: #713F12;
+    font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 999px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08); z-index: 1;
+  }
+
+  /* ─── Modal ─────────────────────────────────────────────────────────────── */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(45,20,86,0.55);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+    z-index: 100;
+    animation: fadeIn 0.18s ease-out;
+  }
+  .modal-backdrop.open { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes popIn { from { opacity: 0; transform: translateY(10px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .modal {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 380px;
+    padding: 22px;
+    box-shadow: 0 20px 60px rgba(45,20,86,0.35);
+    animation: popIn 0.22s ease-out;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute; top: 10px; right: 10px;
+    width: 28px; height: 28px;
+    background: transparent;
+    border: none; border-radius: 50%;
+    font-size: 16px; color: var(--ink-mute);
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .modal-close:hover { background: var(--bg-soft); color: var(--ink); }
+  .modal-icon {
+    width: 44px; height: 44px;
+    background: var(--bg-panel); border-radius: 12px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 12px;
+  }
+  .modal-pts {
+    font-size: 22px; font-weight: 800;
+    color: var(--brand); margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .modal-title { font-size: 16px; font-weight: 700; margin: 0 0 6px; color: var(--ink); }
+  .modal-body { font-size: 13px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 14px; }
+  .modal-steps {
+    background: var(--bg-soft); border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 14px;
+    font-size: 13px; color: var(--ink);
+  }
+  .modal-steps ol { margin: 0; padding-left: 18px; line-height: 1.7; }
+  .modal-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .modal-actions .btn { flex: 1; padding: 9px 14px; font-size: 13px; }
+  /* Compact "go to social" button — full-width single CTA, no oversize chrome */
+  .modal .btn-social {
+    display: block; width: 100%;
+    padding: 11px 16px;
+    font-size: 14px; font-weight: 700;
+    text-align: center;
+    border-radius: 10px;
+    background: var(--brand); color: #fff;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .modal .btn-social:hover { background: var(--brand-2); text-decoration: none; }
+  .modal-meta {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--ink-mute);
+    text-align: center;
+    line-height: 1.4;
+  }
+  .modal-input {
+    width: 100%; padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    margin-bottom: 12px;
+  }
+  .modal-input:focus { outline: none; border-color: var(--brand); }
+  .modal-success {
+    text-align: center; padding: 12px 0;
+  }
+  .modal-success .check {
+    width: 60px; height: 60px;
+    background: var(--success); color: #fff;
+    border-radius: 50%; font-size: 28px;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
+  }
+  .copy-row {
+    display: flex; gap: 6px; margin-bottom: 12px;
+  }
+  .copy-row input { flex: 1; margin-bottom: 0; }
+  .share-row { display: flex; gap: 8px; }
+  .share-btn {
+    flex: 1; padding: 10px;
+    border: 1px solid var(--line);
+    background: #fff; border-radius: 10px;
+    font-size: 13px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .share-btn:hover { background: var(--bg-soft); }
+
+  .note {
+    background: var(--bg-soft);
+    border: 1px dashed var(--brand);
+    color: var(--brand-ink);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .note strong { color: var(--brand); }
+
+  /* ─── Demo tooltip — for links that don't go anywhere in this mockup ── */
+  [data-demo] { position: relative; cursor: help; }
+  [data-demo]::after {
+    content: attr(data-demo);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: #2d1456;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+    padding: 8px 12px;
+    border-radius: 8px;
+    white-space: normal;
+    width: max-content;
+    max-width: 260px;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s, transform 0.15s;
+    z-index: 1000;
+    box-shadow: 0 4px 14px rgba(45,20,86,0.25);
+  }
+  [data-demo]::before {
+    content: "";
+    position: absolute;
+    bottom: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    border: 5px solid transparent;
+    border-top-color: #2d1456;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s, transform 0.15s;
+    z-index: 1000;
+  }
+  [data-demo]:hover::after,
+  [data-demo]:hover::before,
+  [data-demo]:focus::after,
+  [data-demo]:focus::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 900px) {
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .earn-grid    { grid-template-columns: repeat(2, 1fr); }
+    .rewards-grid { grid-template-columns: repeat(2, 1fr); }
+    .tier-grid    { grid-template-columns: 1fr; }
+    .account-row  { grid-template-columns: 1fr; }
+    .hero-points  { font-size: 48px; }
+  }
+  @media (max-width: 560px) {
+    .earn-grid    { grid-template-columns: 1fr; }
+    .rewards-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ─── Hero ─────────────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-greet">Welcome back,</div>
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+      <div>
+        <div class="hero-balance">
+          <div class="hero-points" id="balance">10</div>
+          <div class="hero-pts-label">points to spend</div>
+        </div>
+        <span class="hero-tier">
+          <span class="hero-tier-dot"></span>
+          Prepper tier · 1 pt per $1
+        </span>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:13px; opacity:0.85;">Hi, Azam</div>
+        <div style="font-size:12px; opacity:0.7;">amgst99@gmail.com</div>
+      </div>
+    </div>
+    <div class="hero-progress">
+      <div class="hero-progress-meta">
+        <span>240 points to Survivor</span>
+        <span id="progress-meta">10 / 250</span>
+      </div>
+      <div class="hero-bar"><div class="hero-bar-fill" id="progress-fill"></div></div>
+    </div>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#rewards">Redeem points</a>
+      <a class="btn btn-ghost" href="#"
+         data-demo="In production: opens the review portal at /pages/write-a-review"
+         onclick="return demoLink(event)">Write a review →</a>
+    </div>
+  </section>
+
+  <!-- ─── Already-earned banner (moved out of the grid) ───────────────── -->
+  <div class="anno">
+    <span class="anno-tag">Auto-earned · moved to top</span>
+    <div class="earned-banner">
+      <span class="icon">✓</span>
+      <div class="body">
+        <div class="title">Welcome bonus earned</div>
+        <div class="sub">Awarded automatically when you created your account.</div>
+      </div>
+      <span class="pts">+10 pts</span>
+    </div>
+  </div>
+
+  <!-- ─── Stats ────────────────────────────────────────────────────────── -->
+  <div class="summary-grid">
+    <div class="stat">
+      <div class="stat-label">Points balance</div>
+      <div class="stat-value" id="stat-balance">10</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Lifetime earned</div>
+      <div class="stat-value" id="stat-lifetime">+10</div>
+      <div class="stat-sub">Since you joined</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Reviews</div>
+      <div class="stat-value">3</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Redemptions</div>
+      <div class="stat-value">0</div>
+    </div>
+  </div>
+
+  <!-- ─── Account details ──────────────────────────────────────────────── -->
+  <div class="card">
+    <p class="eyebrow">Account details</p>
+    <div class="account-row">
+      <div>
+        <div class="field-label">Member since</div>
+        <div class="field-value">March 13, 2024</div>
+      </div>
+      <div>
+        <div class="field-label">Birthday</div>
+        <div class="field-value">February 12 <span style="color:var(--ink-mute); font-size:12px; font-weight:400;">· 50 pts coming</span></div>
+      </div>
+      <div>
+        <div class="field-label">Last activity</div>
+        <div class="field-value">May 26, 2026</div>
+      </div>
+    </div>
+    <p style="font-size:12px; color:var(--ink-mute); margin:14px 0 0;">
+      Points expire May 26, 2027 if there's no activity by then.
+    </p>
+  </div>
+
+  <!-- ─── Ways to earn ─────────────────────────────────────────────────── -->
+  <section class="earn-section">
+    <h2 class="section-title">Ways to earn points</h2>
+    <p class="section-sub">The more you engage, the faster you level up. Most actions open right here — no page jumps.</p>
+
+    <!-- Group 1: Shop & review (review → portal full page; the rest open modals) -->
+    <div class="earn-group">
+        <div class="earn-group-head">
+          <h3 class="earn-group-title">Shop &amp; review</h3>
+          <span class="earn-group-sub">Highest-value earns</span>
+        </div>
+        <div class="earn-grid">
+          <!-- Purchase (informational, no action) -->
+          <div class="earn-tile" style="cursor: default;" onclick="return false;">
+            <div class="earn-icon">🛍️</div>
+            <div class="earn-pts">1 pt</div>
+            <div class="earn-title">Every $1 you spend</div>
+            <div class="earn-desc">Awarded automatically when your order is paid.</div>
+          </div>
+
+          <!-- Review portal — full page (rich experience) -->
+          <a class="earn-tile" href="#"
+             data-demo="In production: opens /pages/write-a-review — the customer sees every product they've bought and can review any of them"
+             onclick="return demoLink(event)">
+            <span class="earn-badge portal">Opens portal</span>
+            <div class="earn-icon">⭐</div>
+            <div class="earn-pts">20 pts</div>
+            <div class="earn-title">Write a product review</div>
+            <div class="earn-desc">See every product you've bought and review any of them.</div>
+            <span class="earn-cta">Leave a review</span>
+          </a>
+
+          <a class="earn-tile" href="#"
+             data-demo="In production: opens /pages/write-a-review?focus=photo — the portal highlights photo-review tiles"
+             onclick="return demoLink(event)">
+            <span class="earn-badge portal">Opens portal</span>
+            <div class="earn-icon">📸</div>
+            <div class="earn-pts">+5 pts</div>
+            <div class="earn-title">Add a photo to your review</div>
+            <div class="earn-desc">25 pts total · stacks with the text review above.</div>
+            <span class="earn-cta">Add a photo</span>
+          </a>
+
+          <a class="earn-tile" href="#"
+             data-demo="In production: opens /pages/write-a-review?focus=video — the portal highlights video-review tiles"
+             onclick="return demoLink(event)">
+            <span class="earn-badge portal">Opens portal</span>
+            <div class="earn-icon">🎥</div>
+            <div class="earn-pts">+5 pts</div>
+            <div class="earn-title">Add a video to your review</div>
+            <div class="earn-desc">25 pts total · 60-sec max, processed in a day.</div>
+            <span class="earn-cta">Add a video</span>
+          </a>
+
+          <!-- Receipt — modal (file picker fits perfectly in a modal) -->
+          <button class="earn-tile" type="button" onclick="openModal('receipt')">
+            <div class="earn-icon">🧾</div>
+            <div class="earn-pts">10 pts</div>
+            <div class="earn-title">In-store / local receipt</div>
+            <div class="earn-desc">Upload a photo of your physical receipt for approval.</div>
+            <span class="earn-cta">Upload receipt</span>
+          </button>
+
+          <!-- Birthday — modal (date picker fits perfectly) -->
+          <button class="earn-tile" type="button" onclick="openModal('birthday')">
+            <div class="earn-icon">🎂</div>
+            <div class="earn-pts">50 pts</div>
+            <div class="earn-title">Add your birthday</div>
+            <div class="earn-desc">Get 50 pts every year on your birthday.</div>
+            <span class="earn-cta">Set my birthday</span>
+          </button>
+        </div>
+      </div>
+
+    <!-- Group 2: Refer a friend (modal — copy link) -->
+    <div class="earn-group">
+      <div class="earn-group-head">
+        <h3 class="earn-group-title">Refer a friend</h3>
+        <span class="earn-group-sub">Earn when they buy</span>
+      </div>
+      <div class="earn-grid">
+        <button class="earn-tile" type="button" onclick="openModal('referral')">
+          <div class="earn-icon">📨</div>
+          <div class="earn-pts">10 pts</div>
+          <div class="earn-title">Share your link</div>
+          <div class="earn-desc">Awarded when a friend you referred places their first order.</div>
+          <span class="earn-cta">Get my link</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Group 3: Follow & social — all modals -->
+    <div class="earn-group">
+        <div class="earn-group-head">
+          <h3 class="earn-group-title">Follow us</h3>
+          <span class="earn-group-sub">One tap — instant points</span>
+        </div>
+        <div class="earn-grid">
+          <button class="earn-tile" type="button" onclick="openModal('social', {name:'Instagram', icon:'📷', verb:'Follow', url:'https://instagram.com/doomlings'})">
+            <div class="earn-icon">📷</div>
+            <div class="earn-pts">10 pts</div>
+            <div class="earn-title">Follow on Instagram</div>
+            <span class="earn-cta">Follow &amp; earn</span>
+          </button>
+          <button class="earn-tile" type="button" onclick="openModal('social', {name:'TikTok', icon:'🎵', verb:'Follow', url:'https://tiktok.com/@doomlings'})">
+            <div class="earn-icon">🎵</div>
+            <div class="earn-pts">10 pts</div>
+            <div class="earn-title">Follow on TikTok</div>
+            <span class="earn-cta">Follow &amp; earn</span>
+          </button>
+          <button class="earn-tile" type="button" onclick="openModal('social', {name:'Twitch', icon:'📺', verb:'Follow', url:'https://twitch.tv/doomlings'})">
+            <div class="earn-icon">📺</div>
+            <div class="earn-pts">10 pts</div>
+            <div class="earn-title">Follow on Twitch</div>
+            <span class="earn-cta">Follow &amp; earn</span>
+          </button>
+          <button class="earn-tile" type="button" onclick="openModal('social', {name:'Discord', icon:'🎮', verb:'Join', url:'https://discord.gg/doomlings'})">
+            <div class="earn-icon">🎮</div>
+            <div class="earn-pts">10 pts</div>
+            <div class="earn-title">Join our Discord</div>
+            <span class="earn-cta">Join &amp; earn</span>
+          </button>
+          <button class="earn-tile" type="button" onclick="openModal('social', {name:'Facebook', icon:'🔗', verb:'Share', url:'https://facebook.com/sharer.php?u=https%3A%2F%2Fdoomlings.com'})">
+            <div class="earn-icon">🔗</div>
+            <div class="earn-pts">10 pts</div>
+            <div class="earn-title">Share on Facebook</div>
+            <span class="earn-cta">Share &amp; earn</span>
+          </button>
+          <button class="earn-tile" type="button" onclick="openModal('social', {name:'Facebook Community', icon:'👥', verb:'Join', url:'https://facebook.com/groups/doomlings'})">
+            <div class="earn-icon">👥</div>
+            <div class="earn-pts">10 pts</div>
+            <div class="earn-title">Join Facebook community</div>
+            <span class="earn-cta">Join &amp; earn</span>
+          </button>
+        </div>
+      </div>
+
+    <!-- Group 4: Region-locked -->
+    <div class="anno">
+      <span class="anno-tag">Region-locked · greyed out</span>
+      <div class="earn-group">
+        <div class="earn-group-head">
+          <h3 class="earn-group-title">SMS perks</h3>
+          <span class="earn-group-sub">USA, Canada &amp; UK only</span>
+        </div>
+        <div class="earn-grid">
+          <div class="earn-tile locked">
+            <span class="earn-badge locked">USA/CA/UK</span>
+            <div class="earn-icon">📲</div>
+            <div class="earn-pts">25 pts</div>
+            <div class="earn-title">Sign up for SMS</div>
+            <div class="earn-desc">Not available in your region.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Rewards ─────────────────────────────────────────────────────── -->
+  <div id="rewards" class="rewards-panel">
+    <div class="rewards-head">
+      <div>
+        <h2>Using your points</h2>
+        <div class="meta">You have <strong><span id="rewards-balance">10</span> pts</strong> · click Redeem and paste your code at checkout.</div>
+      </div>
+      <a class="btn btn-primary" href="#"
+         data-demo="In production: scrolls to the full rewards catalog with redeem buttons"
+         onclick="return demoLink(event)"
+         style="background:var(--accent); color:#2d1456;">Browse all rewards</a>
+    </div>
+    <div class="rewards-grid">
+      <div class="reward">
+        <div class="reward-amt">$5 off</div>
+        <div class="reward-label">Get $5 off any order</div>
+        <div class="reward-cost">100 points</div>
+        <div class="reward-needs">90 more to unlock</div>
+      </div>
+      <div class="reward">
+        <div class="reward-amt">$10 off</div>
+        <div class="reward-label">Save on a bigger order</div>
+        <div class="reward-cost">200 points</div>
+        <div class="reward-needs">190 more to unlock</div>
+      </div>
+      <div class="reward">
+        <div class="reward-amt">$20 off</div>
+        <div class="reward-label">Stack up the savings</div>
+        <div class="reward-cost">400 points</div>
+        <div class="reward-needs">390 more to unlock</div>
+      </div>
+      <div class="reward">
+        <div class="reward-amt">$40 off</div>
+        <div class="reward-label">Major haul reward</div>
+        <div class="reward-cost">800 points</div>
+        <div class="reward-needs">790 more to unlock</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Tiers ────────────────────────────────────────────────────────── -->
+  <h2 class="section-title">Reward tiers</h2>
+  <p class="section-sub">Higher tiers = more points per dollar + bigger birthday rewards.</p>
+  <div class="tier-grid">
+    <div class="tier current">
+      <div class="tier-pill">Current tier</div>
+      <div class="tier-name">Prepper</div>
+      <div class="tier-req">Free to join</div>
+      <ul class="tier-perks">
+        <li>1 pt per $1 spent</li>
+        <li>Access to all rewards</li>
+        <li>50 pt birthday bonus</li>
+      </ul>
+    </div>
+    <div class="tier">
+      <div class="tier-name">Survivor</div>
+      <div class="tier-req">250 lifetime points</div>
+      <ul class="tier-perks">
+        <li>1.25 pts per $1 spent</li>
+        <li>50 pt tier entry bonus</li>
+        <li>100 pt birthday bonus</li>
+      </ul>
+    </div>
+    <div class="tier">
+      <div class="tier-name">Ruler</div>
+      <div class="tier-req">500 lifetime points</div>
+      <ul class="tier-perks">
+        <li>1.5 pts per $1 spent</li>
+        <li>100 pt tier entry bonus</li>
+        <li>150 pt birthday bonus</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─── Orders ──────────────────────────────────────────────────────── -->
+  <h2 class="section-title" style="margin-top:48px;">Recent orders</h2>
+  <div class="card" style="padding:8px 14px;">
+    <table class="orders">
+      <thead>
+        <tr>
+          <th>Order</th><th>Date</th><th>Status</th><th style="text-align:right;">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="order-id">Doom127063</td>
+          <td>May 22, 2026</td>
+          <td><span class="pill pill-paid">Paid · Fulfilled</span></td>
+          <td style="text-align:right;">Rs.21.31</td>
+        </tr>
+        <tr>
+          <td class="order-id">Doom127046</td>
+          <td>May 22, 2026</td>
+          <td><span class="pill pill-paid">Paid · Fulfilled</span></td>
+          <td style="text-align:right;">Rs.100.00</td>
+        </tr>
+        <tr>
+          <td class="order-id">Doom126362</td>
+          <td>May 7, 2026</td>
+          <td><span class="pill pill-pending">Pending · Unfulfilled</span></td>
+          <td style="text-align:right;">Rs.34.99</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ─── What changed ─────────────────────────────────────────────────── -->
+  <h2 class="section-title" style="margin-top:48px;">What's different from the current page</h2>
+  <div class="note">
+    <strong>Mockup note:</strong> any link or button that doesn't go anywhere in this file (review portal,
+    social profiles, share buttons, "Browse all rewards") shows a hover tooltip describing what it
+    would do in production. Hover over them to see the explanations.
+  </div>
+  <div class="card">
+    <ol style="margin:0; padding-left:20px; line-height:1.7; color:var(--ink);">
+      <li><strong>"Account created" is out of the earn grid</strong> — moved to the green "Welcome bonus earned" banner at the top. It's already done by default for every signed-in customer, so showing it as a tile alongside active CTAs was just noise.</li>
+      <li><strong>Modals replace page-jumps for one-tap claims.</strong> Social tiles, birthday, receipt, referral all open a modal — customer stays on <code>/pages/rewards</code>, taps once, sees ✓ Done, balance updates inline. Click any tile <em>without</em> the yellow "Opens portal" badge in this mockup to feel it.</li>
+      <li><strong>Review tiles still go to the portal</strong> (full page at <code>/pages/write-a-review</code>) — that's a rich, multi-step experience (OTC verify, product grid, file uploads) that doesn't fit in a modal. They carry an "Opens portal" badge to signal the page change.</li>
+      <li><strong>Birthday flow is now interactive.</strong> Customer enters DOB right in the modal; if today is their birthday, the 50 pts land immediately and the modal flips to a success screen.</li>
+      <li><strong>Referral modal includes a copy button + share buttons</strong> — Yotpo-style: paste your link, share to WhatsApp / Email / X without leaving the page.</li>
+      <li><strong>Social modals are slim and single-CTA</strong>: small icon, "+10 pts", one short line, one button — "Open Instagram ↗". The click <em>is</em> the claim — we grant the 10 pts when they tap the button, and the new tab opens to our profile. No "I followed" second step (it added friction and got skipped). One claim per platform, enforced server-side.</li>
+      <li><strong>Earn tiles are grouped</strong>: Shop &amp; review · Refer · Follow us · Region-locked. Easier to scan than 14 identical squares.</li>
+      <li><strong>SMS tile is dimmed + region badge</strong> instead of being a live button this Pakistan-based customer can't claim.</li>
+      <li><strong>Birthday shown as "February 12"</strong>, not <code>1986-02-12</code> — year is private.</li>
+      <li><strong>Order history moved to the bottom</strong>; the page is about points now.</li>
+    </ol>
+  </div>
+
+</div>
+
+<!-- ─── MODALS ───────────────────────────────────────────────────────── -->
+
+<!-- Social modal — single CTA, point claim fires when they tap the button -->
+<div class="modal-backdrop" id="modal-social">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-icon" id="social-icon">📷</div>
+    <div class="modal-pts">+10 pts</div>
+    <h3 class="modal-title" id="social-title">Follow us on Instagram</h3>
+    <p class="modal-body" id="social-body">
+      Tap below to open our profile in a new tab. Your 10 pts land automatically.
+    </p>
+    <a class="btn-social" id="social-open" href="#"
+       data-demo="In production: opens the linked URL in a new tab AND grants the +10 pts in the same click"
+       onclick="claimSocialDemo(event)">
+      <span id="social-cta">Open Instagram ↗</span>
+    </a>
+    <div class="modal-meta">One claim per platform · awarded once.</div>
+  </div>
+</div>
+
+<!-- Birthday modal -->
+<div class="modal-backdrop" id="modal-birthday">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-icon">🎂</div>
+    <div class="modal-pts">+50 pts every year</div>
+    <h3 class="modal-title">Add your birthday</h3>
+    <p class="modal-body">
+      We'll send you 50 points every year on your birthday. We only use this to schedule your bonus —
+      it's never shown publicly.
+    </p>
+    <input class="modal-input" type="date" id="birthday-input" />
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-solid" onclick="saveBirthday()">Save birthday</button>
+    </div>
+  </div>
+</div>
+
+<!-- Receipt modal -->
+<div class="modal-backdrop" id="modal-receipt">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-icon">🧾</div>
+    <div class="modal-pts">+10 pts</div>
+    <h3 class="modal-title">Upload an in-store receipt</h3>
+    <p class="modal-body">
+      Snap a photo of a Doomlings receipt from a physical store. We'll review it and add 10 pts to your
+      balance once approved (usually within 24 hours).
+    </p>
+    <input class="modal-input" type="file" accept="image/*" />
+    <input class="modal-input" type="text" placeholder="Purchase amount (USD, optional)" />
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-solid" onclick="submitReceipt()">Submit for approval</button>
+    </div>
+  </div>
+</div>
+
+<!-- Referral modal -->
+<div class="modal-backdrop" id="modal-referral">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-icon">📨</div>
+    <div class="modal-pts">+10 pts per friend</div>
+    <h3 class="modal-title">Refer a friend</h3>
+    <p class="modal-body">
+      Share your unique link. You get 10 pts every time a friend places their first order — they
+      get a discount too.
+    </p>
+    <div class="copy-row">
+      <input class="modal-input" type="text" id="ref-link" value="https://doomlings.com/?ref=AZAM-K9X4" readonly />
+      <button class="btn btn-solid" onclick="copyLink()">Copy</button>
+    </div>
+    <div class="share-row">
+      <button class="share-btn" type="button"
+              data-demo="In production: opens the device's mail app with the referral link pre-filled">✉️ Email</button>
+      <button class="share-btn" type="button"
+              data-demo="In production: opens WhatsApp with the link ready to send to a contact">💬 WhatsApp</button>
+      <button class="share-btn" type="button"
+              data-demo="In production: opens X (Twitter) with a pre-written post containing your link">𝕏 Post</button>
+    </div>
+    <p style="font-size:12px; color:var(--ink-mute); margin:14px 0 0;">
+      Points land after their first order is paid. No limit on how many friends you can refer.
+    </p>
+  </div>
+</div>
+
+<!-- Generic success modal -->
+<div class="modal-backdrop" id="modal-success">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-success">
+      <div class="check">✓</div>
+      <h3 class="modal-title" id="success-title">Points added!</h3>
+      <p class="modal-body" id="success-body">
+        +10 pts have been added to your balance.
+      </p>
+      <button class="btn btn-solid" onclick="closeModal()" style="width:100%;">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ─── State ────────────────────────────────────────────────────────────
+  // In the real implementation this lives on the server. The mockup uses
+  // plain JS so the page is a single self-contained file.
+  let state = {
+    balance:  10,
+    lifetime: 10,
+    claimed:  new Set(), // social keys already claimed (idempotent in real app too)
+  };
+
+  // ─── Demo-link guard ──────────────────────────────────────────────────
+  // In production, these <a>/buttons would actually navigate/share. In this
+  // mockup we just suppress the navigation and let the CSS tooltip explain
+  // what the link would do. Returning false stops the href from firing.
+  function demoLink(e) { e.preventDefault(); return false; }
+
+  // ─── Modal helpers ────────────────────────────────────────────────────
+  // Per-verb modal copy. "Share" is special because it opens Facebook's share
+  // dialog (sharer.php), not a profile page — wording reflects that.
+  const SOCIAL_COPY = {
+    Follow: {
+      title: (name) => "Follow us on " + name,
+      body:  (name) => "Tap below to open our " + name + " profile in a new tab. Your 10 pts land automatically.",
+      cta:   (name) => "Open " + name + " ↗",
+    },
+    Join: {
+      title: (name) => "Join us on " + name,
+      body:  (name) => "Tap below to open " + name + " in a new tab and join us. Your 10 pts land automatically.",
+      cta:   (name) => "Open " + name + " ↗",
+    },
+    Share: {
+      title: (_)    => "Share Doomlings on Facebook",
+      body:  (_)    => "Tap below to open Facebook's share dialog with our store pre-filled. Post it to your timeline and the 10 pts are yours.",
+      cta:   (_)    => "Open Facebook share dialog ↗",
+    },
+  };
+
+  function openModal(name, ctx) {
+    const id = "modal-" + (name === "social" ? "social" : name);
+    if (name === "social" && ctx) {
+      const copy = SOCIAL_COPY[ctx.verb] || SOCIAL_COPY.Follow;
+      document.getElementById("social-icon").textContent  = ctx.icon;
+      document.getElementById("social-title").textContent = copy.title(ctx.name);
+      document.getElementById("social-body").textContent  = copy.body(ctx.name);
+      document.getElementById("social-cta").textContent   = copy.cta(ctx.name);
+      document.getElementById("social-open").href         = ctx.url;
+      // Stash ctx so claimSocial knows what was clicked
+      window._socialCtx = ctx;
+    }
+    document.getElementById(id).classList.add("open");
+  }
+
+  function closeModal() {
+    document.querySelectorAll(".modal-backdrop").forEach(m => m.classList.remove("open"));
+  }
+
+  // Close on backdrop click + Esc
+  document.querySelectorAll(".modal-backdrop").forEach(m => {
+    m.addEventListener("click", e => { if (e.target === m) closeModal(); });
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+  // ─── Balance / success helpers ────────────────────────────────────────
+  function addPoints(n) {
+    state.balance  += n;
+    state.lifetime += n;
+    document.getElementById("balance").textContent          = state.balance;
+    document.getElementById("stat-balance").textContent     = state.balance;
+    document.getElementById("stat-lifetime").textContent    = "+" + state.lifetime;
+    document.getElementById("rewards-balance").textContent  = state.balance;
+    document.getElementById("progress-meta").textContent    = state.balance + " / 250";
+    document.getElementById("progress-fill").style.width    = Math.min(100, (state.balance / 250) * 100) + "%";
+  }
+
+  function showSuccess(title, body) {
+    document.getElementById("success-title").textContent = title;
+    document.getElementById("success-body").textContent  = body;
+    closeModal();
+    document.getElementById("modal-success").classList.add("open");
+  }
+
+  // ─── Per-action handlers ──────────────────────────────────────────────
+  // Social claim — demo version.
+  // In production this is one <a target="_blank"> with no preventDefault: the
+  // user's click both grants the points (POST /api/loyalty/claim-task) AND
+  // opens our profile in a new tab in the same gesture. Here we just simulate
+  // the points grant so the rest of the mockup updates.
+  function claimSocialDemo(e) {
+    e.preventDefault();
+    const ctx = window._socialCtx;
+    if (!ctx) return false;
+    if (state.claimed.has(ctx.name)) {
+      closeModal();
+      return false;
+    }
+    state.claimed.add(ctx.name);
+    addPoints(10);
+    const verb = (ctx.verb || "Follow").toLowerCase();
+    const past = verb === "share" ? "sharing Doomlings" : verb + "ing us"; // "sharing" / "following" / "joining"
+    showSuccess("+10 pts added!", "Thanks for " + past + " on " + ctx.name + ".");
+    return false;
+  }
+
+  function saveBirthday() {
+    const v = document.getElementById("birthday-input").value;
+    if (!v) { alert("Pick a date"); return; }
+    // In the real app: POST /api/loyalty/save-birthday → if today is the DOB, points
+    // are awarded immediately by maybeAwardAnnualBirthday and the response says so.
+    const today = new Date(); const dob = new Date(v);
+    const isBirthdayToday = today.getUTCMonth() === dob.getUTCMonth() && today.getUTCDate() === dob.getUTCDate();
+    if (isBirthdayToday) {
+      addPoints(50);
+      showSuccess("🎂 Happy birthday!", "+50 pts added for today's birthday bonus.");
+    } else {
+      showSuccess("Birthday saved", "We'll send you 50 pts on " + dob.toLocaleDateString(undefined, { month: "long", day: "numeric" }) + ".");
+    }
+  }
+
+  function submitReceipt() {
+    showSuccess("Receipt submitted", "We'll review it and add 10 pts within 24 hours. You'll get an email when it's approved.");
+  }
+
+  function copyLink() {
+    const input = document.getElementById("ref-link");
+    input.select();
+    document.execCommand("copy");
+    const btn = event.target;
+    const old = btn.textContent;
+    btn.textContent = "Copied!";
+    setTimeout(() => { btn.textContent = old; }, 1500);
+  }
+</script>
+</body>
+</html>
